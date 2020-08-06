@@ -1,6 +1,6 @@
 import pygame, sys, time, random
 from pygame.locals import *
-
+print("REEEEEE")
 class Player():
     def __init__(self):
         self.x = [0]
@@ -76,7 +76,6 @@ class Game():
         self.height = 500
 
         self.check = True
-        self.background = pygame.image.load("space.jpg")
         self.player = Player()
         self.surf = pygame.Surface((15, 15))
         self.displayer = None
