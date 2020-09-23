@@ -1,6 +1,6 @@
 import pygame, sys, time, random
 from pygame.locals import *
-print("REEEEEE")
+#create player class with movement and update method
 class Player():
     def __init__(self):
         self.x = [0]
@@ -14,7 +14,7 @@ class Player():
         self.updatemax = 2
         self.updatecount = 0
         self.sleep = 0.1
-
+    #sets the direction of the snake attribute, up method makes it goes up etc.
     def up(self):
         self.direction = "up"
 
@@ -26,7 +26,8 @@ class Player():
 
     def right(self):
         self.direction = "right"
-
+    # updates the snake by looping thru each block and replacing that block with the previous block
+    # it updates the coordinates of the head of the snake via a set speed variable and the direction variable.
     def update(self):
         self.updatecount += 1
         if self.updatecount > self.updatemax:
@@ -44,23 +45,25 @@ class Player():
 
             if self.direction == "right":
                 self.x[0] += self.speed
+    # method to draw the snake
     def draw(self, image, surface):
         for i in range(0, self.length):
             surface.blit(image, (self.x[i], self.y[i]))
-
+# class for the score
 class Score():
     def __init__(self, number = 0):
         self.number = number
 
 
-
+# checks whether the snake has collided with something
 class Collision():
+    # simple method to check is coordinates are the same
     def collisioncheck(self, x, y, x2, y2):
         collided = False
         if x == x2 and y == y2:
             collided = True
         return collided
-
+# spawns the food
 class Food():
     def __init__(self, x, y):
         self.player = Player()
@@ -69,8 +72,9 @@ class Food():
 
     def draw(self, image, surface):
         surface.blit(image, (self.x, self.y))
-
+# main game class
 class Game():
+    # intialise all variables need for the game to function
     def __init__(self):
         self.width = 500
         self.height = 500
@@ -83,13 +87,15 @@ class Game():
         self.food = Food(random.randint(2, self.width/self.player.speed - 2), random.randint(2, self.height/self.player.speed - 2))
         self.apple = pygame.Surface((15, 15))
         self.score = Score()
+
     def physics(self):
         self.player.update()
+        # checks if the snake has collided with any part of it's body, if true, the game ends.
         for i in range(1, self.player.length):
             if self.collision.collisioncheck(self.player.x[0], self.player.y[0], self.player.x[i], self.player.y[i]):
                 print("Mission failed, we're get them next time.")
                 self.endgame()
-
+        # checks if the snake has collided with the game windows, if true than move it to opposite edge.
         for i in range(self.player.length):
             if self.player.x[i] > self.width:
                 self.player.x[i] = 0
@@ -102,14 +108,17 @@ class Game():
 
             elif self.player.y[i] < 0:
                 self.player.y[i] = self.height
+        # checks if the snake has collided wit the food, if true despawn the food and increase length and score by 1
         if self.collision.collisioncheck(self.player.x[0], self.player.y[0], self.food.x, self.food.y):
             self.player.length += 1
             self.food.x = random.randint(2, (self.width/self.player.speed - 2)) * self.player.speed
             self.food.y = random.randint(2, (self.height/self.player.speed - 2)) * self.player.speed
             self.score.number += 1
+
     def reset(self):
         self.player = Player()
         self.score.number = 0
+    # ends the game, shows the score and asks if you want to restart.
 
     def endgame(self):
         run = True
@@ -132,12 +141,13 @@ class Game():
 
 
 
-
+    # starts the game
     def switch(self):
         pygame.init()
         self.displayer = pygame.display.set_mode((self.width, self.height), pygame.HWSURFACE)
         self.check = True
 
+    # renders the objects
     def render(self):
         self.displayer.fill((0, 0, 0))
         self.surf.fill((255, 255, 255))
@@ -150,7 +160,7 @@ class Game():
 
         pygame.display.flip()
 
-
+    # main game loop
     def on(self):
         self.switch()
         while (self.check):
